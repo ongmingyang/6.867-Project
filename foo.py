@@ -4,6 +4,14 @@ from nltk.corpus import wordnet as wn
 from nltk import pos_tag as pos
 from pdb import set_trace as debug
 
+'''
+This file parses each corpus by
+1) Removing stems from words, reducing
+  them into their root lexemes
+2) Removing stop words
+3) Tagging the part of speech
+'''
+
 def pg_connect(f):
   with psycopg2.connect("dbname='ml' user='mingy' password='{0}'".format(os.environ['PG_PASSWORD'])) as conn:
     with conn.cursor() as cur:
@@ -14,8 +22,9 @@ def parse_file(path_to_file, cur):
   path_to_write = path_to_file.replace('text','output').replace('txt','csv')
   print path_to_write
 
-  # Skip if file is already written to output
+  # Skip if file is already written to output or is empty
   if os.path.isfile(path_to_write): return
+  if os.path.getsize(path_to_file) <= 1: return
 
   with open(path_to_file) as f:
     thing = f.readlines()
