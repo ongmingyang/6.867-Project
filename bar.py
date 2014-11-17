@@ -21,8 +21,10 @@ def main():
           else:
             dic[row[0]] = (row[1], row[2])
 
+    if root == "output": continue 
     path_to_write = "{0}/0.csv".format(root.replace("output","output2"))
     print path_to_write
+
     with open(path_to_write, 'w') as f:
       f.write("# Lexeme, Part of Speech, Frequency\n")
       for key, value in dic.iteritems():
