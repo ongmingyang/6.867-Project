@@ -35,7 +35,7 @@ def main():
 
   print len(dic)
   with open(path_to_histogram, 'w') as f:
-    f.write("# Word: frequency\n # This list is sorted from highest to lowest frequency\n")
+    f.write("# Word: frequency\n# This list is sorted from highest to lowest frequency\n")
     for key in sorted(dic, cmp=lambda x,y: cmp(dic[x], dic[y]), reverse=True):
       f.write("{0}, {1}\n".format(key, dic[key]))
 
