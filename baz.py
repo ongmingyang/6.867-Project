@@ -9,7 +9,7 @@ a single csv file
 '''
 
 # Globals
-threshold = 100 # drops all entries in the dictionary that appears fewer than `threshold` times in total
+threshold = 300 # drops all entries in the dictionary that appears fewer than `threshold` times in total
 path_to_histogram = "output3/hist.csv"
 path_to_matrix = "output3/matrix.csv"
 
@@ -40,15 +40,16 @@ def main():
       f.write("{0}, {1}\n".format(key, dic[key]))
 
   # Begin pruning dictionary for feature matrix
-  pruned_dic = {k:0 for (k,v) in dic.iteritems() if v > threshold}
+  dic_order = sorted([(k,v) for (k,v) in dic.iteritems() if v > threshold], key=lambda tup: tup[1], reverse=True)
+  pruned_dic = {k:0 for (k,v) in dic_order}
   print len(pruned_dic)
 
   # Second iteration of dirtree to get frequencies of vectors
   with open(path_to_matrix, 'w') as f:
     # Write words in row
     f.write("# [Date]") 
-    for key in pruned_dic.keys():
-      f.write(", {0}".format(key))
+    for tup in dic_order:
+      f.write(", {0}".format(tup[0]))
     f.write("\n")
 
     # Write frequencies into each row for each day in year
@@ -70,8 +71,8 @@ def main():
               pruned_dic[row[0]] += int(row[2])
 
         # Write row
-        for key in pruned_dic.keys():
-          f.write(", {0}".format(pruned_dic[key]))
+        for tup in dic_order:
+          f.write(", {0}".format(pruned_dic[tup[0]]))
         f.write("\n")
 
 main()
