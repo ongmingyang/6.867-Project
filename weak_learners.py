@@ -63,10 +63,14 @@ for i in xrange(1, len(words)):
 
 gain_order = sorted([(k,v) for (k,v) in gains.iteritems()], key=lambda tup: tup[1])
 prob = lambda tup: g * tup[1][0]/goods + b * tup[1][1]/bads
-predict_order = sorted([(k,v,prob((k,v))) for (k,v) in predict_rate.iteritems()], key=prob, reverse=True)
+predict_order = sorted([(k, v, prob((k,v))) for (k,v) in predict_rate.iteritems()], key=prob, reverse=True)
 
-for i in xrange(0,20):
-  output = ' & '.join(map(str, predict_order[i])).replace(',',' &').replace('(', '').replace(')', '')
+top = xrange(0,20)
+bottom = xrange(5356,5376)
+
+for i in bottom:
+  predict_order[i] = predict_order[i][0], float(predict_order[i][1][0])/goods, float(predict_order[i][1][1])/bads, predict_order[i][2]
+  output = ' & '.join(map(str, predict_order[i]))
   print output + ' \\\ '
   #print predict_order[i], gains[predict_order[i][0]]
   #print gain_order[i], predict_rate[gain_order[i][0]]
