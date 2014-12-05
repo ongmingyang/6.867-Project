@@ -6,6 +6,11 @@ from pdb import set_trace as debug
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
 
+'''
+Performs adaboost using decision stumps as weak learners
+Decision stumps are determined in file [weak_learners.py]
+'''
+
 # Get decision stump indices
 stumps = ["scotland", "violent", "feb", "advised", "youth", "chronicle", "ambition", "contemporary", "shared", "semiconductor", "cdos", "financi", "kurdish", "mukasey", "astrazeneca", "oat", "avandia", "myanmar", "glaxo", "tiffani"]
 stump_indices = []
@@ -38,10 +43,25 @@ y_train = y[train_indices]
 x_test = np.ceil(x[test_indices])
 y_test = y[test_indices]
 
-#ada=AdaBoostClassifier(DecisionTreeClassifier(max_depth=1), n_estimators=25) 
+# Roll data?
+y_train = np.roll(y_train,0)
+y_test = np.roll(y_test,0)
+
+#ada=AdaBoostClassifier(DecisionTreeClassifier(max_depth=1), n_estimators=26) 
 ada=AdaBoostClassifier() 
 ada.fit(x_train,y_train.ravel())
 
-score = ada.staged_score(x_test, y_test.ravel())
-for stage in score:
-  print stage
+pred = ada.predict(x_test) #, y_test.ravel())
+real = y_test.ravel()
+score = {"pos":0,"false_pos":0,"neg":0,"false_neg":0}
+for i in xrange(len(pred)):
+  if pred[i] == 1 and real[i] == 1:
+    score["pos"] += 1
+  if pred[i] == 1 and real[i] == -1:
+    score["false_pos"] += 1
+  if pred[i] == -1 and real[i] == 1:
+    score["false_neg"] += 1
+  if pred[i] == -1 and real[i] == -1:
+    score["neg"] += 1
+    
+print score
